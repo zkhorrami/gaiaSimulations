@@ -1,0 +1,21 @@
+INPUT:
+	age: between 0-100 [Myr]
+	distance: distance of the center of the cluster in [pc]
+	AV: AV in the line-of-sight of the observer and stars in FOV
+	fov: Field-of-view in arcsec
+	sim: location of the NBODY6 simulation folder
+
+Running sequence:
+	$ python gaiaBC.py age=2.0 distance=500 AV=0.0 fov=20 sim='/Users/Zeinab/Desktop/nbody6-zeinab/zeinab-sims/M103/Q05/Rh05/D20S00bin00M103r05Q05/'
+
+OUTPUT:
+	ID star: name of the star in NBODY6 simulations
+        RA, Dec [arcsec]: position of the stars in arcsec from the center of the cluster
+        Parallax [mas]: 1000/distance of the star [pc]
+	Proper motion in RA and Dec [mas/yr]: proper motion of the stars in RA and Dec in [mas/yr]
+	G mag: Gaia magnitude in broadband G filter
+	(BP - RP): Reddening in Gaia Red and Blue filters
+	Stellar parametrs: mass [solar-mass], Effective Temperature [K], luminosity (logL/Lsun) 
+
+Written by Z. Khorrami (KhorramiZ@cardiff.ac.uk)
+Updated: 3 Apr 2019
