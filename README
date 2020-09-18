@@ -19,4 +19,4 @@ OUTPUT:
         OBSflag: If the star is observable by Gaia or not ('T': observable, 'F': not observable) the criteria is sensitive to the stars separation and flux ratios, taken from Brandeker & Cataldi 2018 (Table 1), and also if the star is not fainter than 20.7 G-magnitude
 
 Written by Z. Khorrami (KhorramiZ@cardiff.ac.uk)
-Updated: 3 Apr 2019
+Updated: 18 Sep 2020
