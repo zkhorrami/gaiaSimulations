@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import sys
+import os
 from math import *
 import random
 import numpy as np
@@ -11,6 +12,10 @@ pi=np.pi
 def FINDCLOSE(par1,pararr):
     nclose=np.argsort(abs(np.add(-par1,pararr)))
     return nclose[0]
+
+def FINDCLOSElist(par1,pararr):
+    nclose=np.argsort(abs(np.add(-par1,pararr)))
+    return nclose
 
 def rot_euler(v, xyz):
     ''' Rotate vector v (or array of vectors) by the euler angles xyz '''
@@ -105,9 +110,6 @@ Mbolsun = 4.77
 
 filestar=simfolder+simfolder[-22:-1]+'/'+simfolder[-22:-1]+'-'+np.str("%05g" %(round(agestarinput)))+'-sin'
 
-print 'ID'.center(5),'RA'.center(13),'Dec'.center(13),'Parallax'.center(13),'Proper motion'.center(13),'Proper motion'.center(13),'G mag'.center(13),'(BP - RP)'.center(13),'Radial'.center(13),'Mass'.center(13),'Teff'.center(13),'logL/Lo'.center(13)
-print 'star'.center(5),'[arcsec]'.center(13),'[arcsec]'.center(13),'[mas]'.center(13),'in RA[mas/yr]'.center(13) ,'in Dec[mas/yr]'.center(13), ' '.center(13), '[mag]'.center(13),'Velocity[km/s]'.center(13),'[Mo]'.center(13),'[K]'.center(13),' '
-
 
 lambdaFG,weightG=np.loadtxt(filterfileG,unpack=True)
 lambdaFGB,weightGB=np.loadtxt(filterfileGB,unpack=True)
@@ -175,6 +177,8 @@ fluxstar=np.zeros(nstar)
 newx=xstar*pc2pixstar #convert x[pc] into pixel position
 newy=ystar*pc2pixstar
 newz=zstar*pc2pixstar
+
+
 columncloud=np.zeros(nstar) #column density of the cloud in fron of each star
 
 if (Columndensities == 'sph'):
@@ -210,6 +214,8 @@ if (OBtreatment == 'yes'):
     nsedsOB=len(teffsedOB)
 
 nstars=0
+lunstarinfo=open('temporaryfile',"w")
+print 'WAIT FOR IT ..............................'
 for ii in range(nstar):
     if ((abs(newx[ii]) < (xpix/2)-1) and (abs(newy[ii]) < (ypix/2)-1)):
         nstars += 1
@@ -258,5 +264,50 @@ for ii in range(nstar):
         magGR=Mbolsun-2.5*loglstar[ii]-(bcGR)+5.0*log10(distancestar[ii]/10.0)
 
 
-        print("%5g %13.4f %13.4f  %13.4f %13.4f %13.4f %13.4f %13.4f %13.4f %13.2f %13.2f %13.4f  " %(IDstar[ii],newx[ii]*res,newy[ii]*res,1000.0/distancestar[ii],vxstar[ii]*pc2pixstar[ii]*res*0.001,vystar[ii]*pc2pixstar[ii]*res*0.001, magG, magGB-magGR, vzstar[ii],massstar[ii],Teffstar[ii],loglstar[ii]))
+#        print("%5g %13.4f %13.4f  %13.4f %13.4f %13.4f %13.4f %13.4f %13.4f %13.2f %13.2f %13.4f  " %(IDstar[ii],newx[ii]*res,newy[ii]*res,1000.0/distancestar[ii],vxstar[ii]*pc2pixstar[ii]*res*0.001,vystar[ii]*pc2pixstar[ii]*res*0.001, magG, magGB-magGR, vzstar[ii],massstar[ii],Teffstar[ii],loglstar[ii]))
+
+        lunstarinfo.write("%5g %13.4f %13.4f  %13.4f %13.4f %13.4f %13.4f %13.4f %13.4f %13.2f %13.2f %13.4f  \n" %(IDstar[ii],newx[ii]*res,newy[ii]*res,1000.0/distancestar[ii],vxstar[ii]*pc2pixstar[ii]*res*0.001,vystar[ii]*pc2pixstar[ii]*res*0.001, magG, magGB-magGR, vzstar[ii],massstar[ii],Teffstar[ii],loglstar[ii]))
+
+lunstarinfo.close()
+
+sys.stdout.write("\033[F")
+sys.stdout.write("\033[K")
+
+if (nstars == 0): 
+    print 'NO STARS FOUND! PLEASE CHOSE A LARGER FOV'
+    exit()
+#Brandeker&Cataldi 2018- Table 1, last column
+
+DGmodel=np.array([0.5,1.0,1.5,2.0,2.5,3.0,3.5,4.0,4.5,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0,13.0,14.0])
+SEPmodel=np.array([0.66,0.78,0.96,1.1,1.2,1.2,1.3,1.3,1.4,1.5,2.3,3.0,3.6,4.8,6.1,7.8,9.6,11.0,12.0])
+
+ID,RA,Dec,Parallax,Properx,Propery,Gmag,BRmag,Radial,Mass,Teff,logL=np.loadtxt('temporaryfile',unpack=True)
+
+R2=(RA*RA+Dec*Dec)
+
+
+print 'ID'.center(5),'RA'.center(13),'Dec'.center(13),'Parallax'.center(13),'Proper motion'.center(13),'Proper motion'.center(13),'G mag'.center(13),'(BP - RP)'.center(13),'Radial'.center(13),'Mass'.center(13),'Teff'.center(13),'logL/Lo'.center(13),'OBSflag'.center(13)
+print 'star'.center(5),'[arcsec]'.center(13),'[arcsec]'.center(13),'[mas]'.center(13),'in RA[mas/yr]'.center(13) ,'in Dec[mas/yr]'.center(13), ' '.center(13), '[mag]'.center(13),'Velocity[km/s]'.center(13),'[Mo]'.center(13),'[K]'.center(13),' '
+
+
+for ii in range(nstars):
+    flag='T'
+    nclosestar=FINDCLOSElist(R2[ii],R2)
+    for jj in range(1,np.size(nclosestar)):
+        if Gmag[nclosestar[jj]] < Gmag[ii] :
+            primary=nclosestar[jj]
+            break
+        else: primary=nclosestar[0]
+
+    separation=sqrt((RA[ii]-RA[primary])*(RA[ii]-RA[primary])+(Dec[ii]-Dec[primary])*(Dec[ii]-Dec[primary]))
+    deltaG=Gmag[ii]-Gmag[primary]
+
   
+    seplimit=np.interp(deltaG,DGmodel,SEPmodel)
+    
+    if (separation != 0.0 and deltaG <= 14.0 and separation < seplimit ) : flag='F'
+    if Gmag[ii] >=20.7 : flag='F'
+    
+    print("%5g %13.4f %13.4f  %13.4f %13.4f %13.4f %13.4f %13.4f %13.4f %13.2f %13.2f %13.4f %5s " %(ID[ii],RA[ii],Dec[ii],Parallax[ii],Properx[ii],Propery[ii],Gmag[ii],BRmag[ii],Radial[ii],Mass[ii],Teff[ii],logL[ii], flag))
+
+os.remove("temporaryfile")
