@@ -15,7 +15,8 @@ OUTPUT:
 	Proper motion in RA and Dec [mas/yr]: proper motion of the stars in RA and Dec in [mas/yr]
 	G mag: Gaia magnitude in broadband G filter
 	(BP - RP): Reddening in Gaia Red and Blue filters
-	Stellar parametrs: mass [solar-mass], Effective Temperature [K], luminosity (logL/Lsun) 
+	Stellar parametrs: mass [solar-mass], Effective Temperature [K], luminosity (logL/Lsun)
+        OBSflag: If the star is observable by Gaia or not ('T': observable, 'F': not observable) the criteria is sensitive to the stars separation and flux ratios, taken from Brandeker & Cataldi 2018 (Table 1), and also if the star is not fainter than 20.7 G-magnitude
 
 Written by Z. Khorrami (KhorramiZ@cardiff.ac.uk)
 Updated: 3 Apr 2019
