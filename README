@@ -8,6 +8,14 @@ INPUT:
 Running sequence:
 	$ python gaiaBC.py age=2.0 distance=500 AV=0.0 fov=20 sim='/Users/Zeinab/Desktop/nbody6-zeinab/zeinab-sims/M103/Q05/Rh05/D20S00bin00M103r05Q05/'
 
+!!WARNING: you can use your own input file for star's information from the simulations. But it should be in the format of:
+Column 1: ID of star
+Column 2,3,4 : x,y,z positions in pc
+column 5,6,7: Vx,Vy,Vz velocities in km/s or pc/Myr
+Column 8,9,10: doesn't matter
+Column 11: mass in M_sun
+
+
 OUTPUT:
 	ID star: name of the star in NBODY6 simulations
         RA, Dec [arcsec]: position of the stars in arcsec from the center of the cluster
